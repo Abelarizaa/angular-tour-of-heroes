@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -11,7 +11,7 @@ import { HeroService } from '../hero.service';
   styleUrls: [ './hero-detail.component.css' ]
 })
 export class HeroDetailComponent implements OnInit {
-  hero: Hero | undefined;
+  @Input() hero: Hero | any;
 
   constructor(
     private route: ActivatedRoute,
@@ -24,12 +24,17 @@ export class HeroDetailComponent implements OnInit {
   }
 
   getHero(): void {
-    const id = +this.route.snapshot.paramMap.get('id')!; //la exclamacion al final es para indicarle que sabemos que no va a ser null
+    const id = +this.route.snapshot.paramMap.get('id')!;
     this.heroService.getHero(id)
       .subscribe(hero => this.hero = hero);
   }
 
   goBack(): void {
     this.location.back();
+  }
+
+  save(): void {
+    this.heroService.updateHero(this.hero)
+      .subscribe(() => this.goBack());
   }
 }
